@@ -1,4 +1,11 @@
 package hudson.plugins.deploy.tomcat;
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.Run;
+import hudson.model.TaskListener;
+import hudson.plugins.deploy.PasswordProtectedAdapterCargo;
+import hudson.util.VariableResolver;
 
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -40,7 +47,6 @@ public abstract class TomcatAdapter extends PasswordProtectedAdapterCargo {
     public final String context;
 
     private final String path;
-
 
     public TomcatAdapter(String url, String credentialsId, String context) {
         this(url, credentialsId, context, null);
