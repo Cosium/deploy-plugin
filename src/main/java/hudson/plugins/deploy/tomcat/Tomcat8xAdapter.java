@@ -20,11 +20,12 @@ public class Tomcat8xAdapter extends TomcatAdapter {
      *
      * @param url Tomcat server location (for example: http://localhost:8080)
      * @param credentialsId tomcat manager username password credentials
+     * @param context alternative context
      * @param path an alternative manager context path
      */
     @DataBoundConstructor
-    public Tomcat8xAdapter(String url, String credentialsId, String path) {
-        super(url, credentialsId, path);
+    public Tomcat8xAdapter(String url, String credentialsId, String path, String context) {
+        super(url, credentialsId, path, context);
     }
 
     @Override

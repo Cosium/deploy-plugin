@@ -21,10 +21,11 @@ public class Tomcat7xAdapter extends TomcatAdapter {
      * @param url Tomcat server location (for example: http://localhost:8080)
      * @param credentialsId the tomcat user credentials
      * @param path an alternative manager context path
+     * @param context alternative context
      */
     @DataBoundConstructor
-    public Tomcat7xAdapter(String url, String credentialsId, String path) {
-        super(url, credentialsId, path);
+    public Tomcat7xAdapter(String url, String credentialsId, String path, String context) {
+        super(url, credentialsId, path, context);
     }
 
     @Override

@@ -16,8 +16,8 @@ public class Tomcat4xAdapter extends TomcatAdapter {
     private static final long serialVersionUID = -3577537993151201721L;
 
     @DataBoundConstructor
-    public Tomcat4xAdapter(String url, String credentialsId, String path) {
-        super(url, credentialsId, path);
+    public Tomcat4xAdapter(String url, String credentialsId, String path, String context) {
+        super(url, credentialsId, path, context);
     }
 
     @Override

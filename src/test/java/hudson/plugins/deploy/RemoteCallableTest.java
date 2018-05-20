@@ -43,6 +43,12 @@ import hudson.model.Run;
 import hudson.model.Slave;
 import hudson.plugins.deploy.tomcat.Tomcat8xAdapter;
 import jenkins.model.Jenkins;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Rule;
+import org.junit.Test;
+import org.jvnet.hudson.test.JenkinsRule;
+
+import java.util.ArrayList;
 
 /**
  * Tests that deployment can be called from a remote agent.
@@ -73,7 +79,7 @@ public class RemoteCallableTest {
                 new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, "test-id", "", "user", "pass"));
 
         ArrayList<ContainerAdapter> adapters = new ArrayList<ContainerAdapter>();
-        adapters.add(new Tomcat8xAdapter(j.getURL().toExternalForm(), "test-id", "/manager/text"));
+        adapters.add(new Tomcat8xAdapter(j.getURL().toExternalForm(), "test-id", "/manager/text", StringUtils.EMPTY));
         project.getPublishersList().add(new DeployPublisher(adapters, war.getName()));
 
         Run<?, ?> run = project.scheduleBuild2(0).get();

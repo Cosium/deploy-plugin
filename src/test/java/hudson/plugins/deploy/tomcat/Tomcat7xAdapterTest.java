@@ -16,6 +16,7 @@ import hudson.slaves.EnvironmentVariablesNodeProperty;
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.cargo.container.ContainerType;
 import org.codehaus.cargo.container.configuration.Configuration;
 import org.codehaus.cargo.container.configuration.ConfigurationType;
@@ -41,6 +42,7 @@ public class Tomcat7xAdapterTest {
     private static final String username = "usernm";
     private static final String usernameVariable = "user";
     private static final String password = "password";
+    private static final String alternativeContextVariable = "context";
     private static final String variableStart = "${";
     private static final String variableEnd = "}";
     
@@ -51,7 +53,7 @@ public class Tomcat7xAdapterTest {
         UsernamePasswordCredentialsImpl c = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, "test", "sample", username, password);
         CredentialsProvider.lookupStores(jenkinsRule.jenkins).iterator().next().addCredentials(Domain.global(), c);
 
-        adapter = new Tomcat7xAdapter(url, c.getId(), null);
+        adapter = new  Tomcat7xAdapter(url, c.getId(), null, StringUtils.EMPTY);
         adapter.loadCredentials(/* temp project to avoid npe */ jenkinsRule.createFreeStyleProject());
     }
 
@@ -86,7 +88,9 @@ public class Tomcat7xAdapterTest {
                 "", getVariable(usernameVariable), password);
         CredentialsProvider.lookupStores(jenkinsRule.jenkins).iterator().next().addCredentials(Domain.global(), c);
 
-        adapter = new Tomcat7xAdapter(getVariable(urlVariable), c.getId(), managerContextPath);
+        adapter =
+            new Tomcat7xAdapter(
+                getVariable(urlVariable), c.getId(), managerContextPath, getVariable(alternativeContextVariable));
         Configuration config = new DefaultConfigurationFactory().createConfiguration(adapter.getContainerId(), ContainerType.REMOTE, ConfigurationType.RUNTIME);
         adapter.migrateCredentials(Collections.<StandardUsernamePasswordCredentials>emptyList());
         adapter.loadCredentials(project);

@@ -16,8 +16,8 @@ public class Tomcat5xAdapter extends TomcatAdapter {
     private static final long serialVersionUID = 2441615146518612287L;
 
     @DataBoundConstructor
-    public Tomcat5xAdapter(String url, String credentialsId, String path) {
-        super(url, credentialsId, path);
+    public Tomcat5xAdapter(String url, String credentialsId, String path, String context) {
+        super(url, credentialsId, path, context);
     }
 
     @Override
