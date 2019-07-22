@@ -2,7 +2,6 @@ package hudson.plugins.deploy;
 
 import hudson.model.Result;
 import hudson.plugins.deploy.tomcat.Tomcat8xAdapter;
-import org.apache.commons.lang3.StringUtils;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.cps.SnippetizerTester;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
@@ -127,10 +126,10 @@ public class PipelineSyntaxTest {
         j.getInstance().createProject(WorkflowJob.class, "SnippetTest");
         SnippetizerTester t = new SnippetizerTester(j);
 
-        ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id", StringUtils.EMPTY, null);
+        ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id");
         DeployPublisher dp = new DeployPublisher(Collections.singletonList(tc), "app.war");
 
-        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(context: '', credentialsId: 'test-id', url: 'http://example.com')], war: 'app.war'");
+        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(credentialsId: 'test-id', url: 'http://example.com')], war: 'app.war'");
     }
 
     @Test
@@ -138,22 +137,11 @@ public class PipelineSyntaxTest {
         WorkflowJob p = j.getInstance().createProject(WorkflowJob.class, "SnippetTest");
         SnippetizerTester t = new SnippetizerTester(j);
 
-        ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id", StringUtils.EMPTY, null);
+        ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id");
         DeployPublisher dp = new DeployPublisher(Collections.singletonList(tc), "app.war");
         dp.setOnFailure(!j.jenkins.getDescriptorByType(DeployPublisher.DescriptorImpl.class).defaultOnFailure(p));
         dp.setContextPath("my-app");
 
-        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(context: '', credentialsId: 'test-id', url: 'http://example.com')], contextPath: 'my-app', onFailure: false, war: 'app.war'");
-    }
-
-    @Test
-    public void testSnippetizerPath() throws Exception {
-        j.getInstance().createProject(WorkflowJob.class, "SnippetTest");
-        SnippetizerTester t = new SnippetizerTester(j);
-
-        ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id", StringUtils.EMPTY, "/foo-manager/text");
-        DeployPublisher dp = new DeployPublisher(Collections.singletonList(tc), "app.war");
-
-        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(context: '', credentialsId: 'test-id', path: '/foo-manager/text', url: 'http://example.com')], war: 'app.war'");
+        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(credentialsId: 'test-id', url: 'http://example.com')], contextPath: 'my-app', onFailure: false, war: 'app.war'");
     }
 }
