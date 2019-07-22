@@ -21,10 +21,11 @@ public class Tomcat9xAdapter extends TomcatAdapter {
      * @param url Tomcat server location (for example: http://localhost:8080)
      * @param credentialsId tomcat manager username password credentials
      * @param path an alternative manager context path
+     * @param context an alternative deployment context path
      */
     @DataBoundConstructor
-    public Tomcat9xAdapter(String url, String credentialsId, String path) {
-        super(url, credentialsId, path);
+    public Tomcat9xAdapter(String url, String credentialsId, String path, String context) {
+        super(url, credentialsId, path, context);
     }
 
     @Override

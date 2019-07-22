@@ -151,7 +151,7 @@ public class PipelineSyntaxTest {
         j.getInstance().createProject(WorkflowJob.class, "SnippetTest");
         SnippetizerTester t = new SnippetizerTester(j);
 
-        ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id", "/foo-manager/text");
+        ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id", "/foo-manager/text", StringUtils.EMPTY);
         DeployPublisher dp = new DeployPublisher(Collections.singletonList(tc), "app.war");
 
         t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(credentialsId: 'test-id', path: '/foo-manager/text', url: 'http://example.com')], war: 'app.war'");
