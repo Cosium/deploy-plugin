@@ -30,7 +30,6 @@ public class PipelineSyntaxTest {
                 "}";
     }
 
-    /**
     @Test
     public void testNoAdapterDeploy() throws Exception {
         WorkflowJob p = j.getInstance().createProject(WorkflowJob.class, "DryRunTest");
@@ -146,6 +145,4 @@ public class PipelineSyntaxTest {
 
         t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(credentialsId: 'test-id', url: 'http://example.com')], contextPath: 'my-app', onFailure: false, war: 'app.war'");
     }
-    */
-
 }

@@ -18,6 +18,7 @@ public class Tomcat6xAdapter extends TomcatAdapter {
         super(url, credentialsId, context);
     }
 
+    @Override
     public String getContainerId() {
         return "tomcat6x";
     }
