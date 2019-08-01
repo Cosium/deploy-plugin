@@ -16,8 +16,8 @@ public class Tomcat6xAdapter extends TomcatAdapter {
     private static final long serialVersionUID = 1558737368614036333L;
 
     @DataBoundConstructor
-    public Tomcat6xAdapter(String url, String credentialsId, String context, String path) {
-        super(url, credentialsId, context, path);
+    public Tomcat6xAdapter(String url, String credentialsId, String path) {
+        super(url, credentialsId, path);
     }
 
     @Override
