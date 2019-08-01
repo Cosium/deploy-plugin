@@ -74,7 +74,7 @@ public class RemoteCallableTest {
                 new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, "test-id", "", "user", "pass"));
 
         ArrayList<ContainerAdapter> adapters = new ArrayList<ContainerAdapter>();
-        adapters.add(new Tomcat8xAdapter(j.getURL().toExternalForm(), "test-id", "/manager/text", StringUtils.EMPTY));
+        adapters.add(new Tomcat8xAdapter("http://example.com", "test-id", "/manager/text", StringUtils.EMPTY, "test-id"));
         project.getPublishersList().add(new DeployPublisher(adapters, war.getName()));
 
         Run<?, ?> run = project.scheduleBuild2(0).get();

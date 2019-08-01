@@ -21,10 +21,6 @@ import org.codehaus.cargo.container.property.RemotePropertySet;
 import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.codehaus.cargo.container.tomcat.TomcatWAR;
 
-import hudson.EnvVars;
-import hudson.plugins.deploy.PasswordProtectedAdapterCargo;
-import hudson.util.VariableResolver;
-
 /**
  * Base class for Tomcat adapters.
  *
@@ -37,17 +33,20 @@ public abstract class TomcatAdapter extends PasswordProtectedAdapterCargo {
      * Top URL of Tomcat.
      */
     public final String url;
-    private final String path;
+
     /**
      * Alternative context that override context defined in plugin main configuration
      */
     public final String context;
 
-    public TomcatAdapter(String url, String credentialsId) {
-      this(url, credentialsId, null, StringUtils.EMPTY);
+    private final String path;
+
+
+    public TomcatAdapter(String url, String credentialsId, String context) {
+        this(url, credentialsId, context, null);
     }
 
-    public TomcatAdapter(String url, String credentialsId, String path, String context) {
+    public TomcatAdapter(String url, String credentialsId, String context, String path) {
         super(credentialsId);
         this.url = url;
         this.path = path;

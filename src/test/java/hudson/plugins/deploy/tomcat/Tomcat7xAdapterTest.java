@@ -53,7 +53,7 @@ public class Tomcat7xAdapterTest {
         UsernamePasswordCredentialsImpl c = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, "test", "sample", username, password);
         CredentialsProvider.lookupStores(jenkinsRule.jenkins).iterator().next().addCredentials(Domain.global(), c);
 
-        adapter = new  Tomcat7xAdapter(url, c.getId(), null, StringUtils.EMPTY);
+        adapter = new  Tomcat7xAdapter(url, c.getId(), StringUtils.EMPTY, null);
         adapter.loadCredentials(/* temp project to avoid npe */ jenkinsRule.createFreeStyleProject());
     }
 
@@ -90,7 +90,7 @@ public class Tomcat7xAdapterTest {
 
         adapter =
             new Tomcat7xAdapter(
-                getVariable(urlVariable), c.getId(), managerContextPath, getVariable(alternativeContextVariable));
+                getVariable(urlVariable), c.getId(), getVariable(alternativeContextVariable), managerContextPath);
         Configuration config = new DefaultConfigurationFactory().createConfiguration(adapter.getContainerId(), ContainerType.REMOTE, ConfigurationType.RUNTIME);
         adapter.migrateCredentials(Collections.<StandardUsernamePasswordCredentials>emptyList());
         adapter.loadCredentials(project);
