@@ -16,7 +16,9 @@ import java.net.URL;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.cargo.container.configuration.Configuration;
 import org.codehaus.cargo.container.deployable.WAR;
+import org.codehaus.cargo.container.property.GeneralPropertySet;
 import org.codehaus.cargo.container.property.RemotePropertySet;
+import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.codehaus.cargo.container.tomcat.TomcatWAR;
 
 /**
@@ -37,19 +39,18 @@ public abstract class TomcatAdapter extends PasswordProtectedAdapterCargo {
      */
     public final String context;
 
-    private String path = "/manager";
+    private final String path;
 
 
     public TomcatAdapter(String url, String credentialsId, String context) {
-        super(credentialsId);
-        this.url = url;
-        this.context = context;
+        this(url, credentialsId, context, null);
     }
 
-    public TomcatAdapter(String url, String credentialsId, String path) {
+    public TomcatAdapter(String url, String credentialsId, String context, String path) {
         super(credentialsId);
         this.url = url;
         this.path = path;
+        this.context = context;
     }
 
     @Override
@@ -57,12 +58,25 @@ public abstract class TomcatAdapter extends PasswordProtectedAdapterCargo {
         return url;
     }
 
+    public String getPath() {
+        return path;
+    }
+
     @Override
     public void configure(Configuration config, EnvVars envVars, VariableResolver<String> resolver) {
         super.configure(config, envVars, resolver);
         try {
-            URL _url = new URL(expandVariable(envVars, resolver, this.url) + path);
-            config.setProperty(RemotePropertySet.URI, _url.toExternalForm());
+            if (StringUtils.isNotBlank(this.path)) {
+                // set remote URI directly if alternative manager context path is specified
+                URL managerUrl = new URL(expandVariable(envVars, resolver, this.url) + expandVariable(envVars, resolver, this.path));
+                config.setProperty(RemotePropertySet.URI, managerUrl.toExternalForm());
+            } else {
+                // overwrite default values with current URL
+                URL baseUrl = new URL(expandVariable(envVars, resolver, this.url));
+                config.setProperty(GeneralPropertySet.PROTOCOL, baseUrl.getProtocol());
+                config.setProperty(GeneralPropertySet.HOSTNAME, baseUrl.getHost());
+                config.setProperty(ServletPropertySet.PORT, String.valueOf(baseUrl.getPort()));
+            }
         } catch (MalformedURLException e) {
             throw new AssertionError(e);
         }
