@@ -130,7 +130,7 @@ public class PipelineSyntaxTest {
         ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id", StringUtils.EMPTY, null);
         DeployPublisher dp = new DeployPublisher(Collections.singletonList(tc), "app.war");
 
-        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(credentialsId: 'test-id', url: 'http://example.com')], war: 'app.war'");
+        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(context: '', credentialsId: 'test-id', url: 'http://example.com')], war: 'app.war'");
     }
 
     @Test
@@ -143,7 +143,7 @@ public class PipelineSyntaxTest {
         dp.setOnFailure(!j.jenkins.getDescriptorByType(DeployPublisher.DescriptorImpl.class).defaultOnFailure(p));
         dp.setContextPath("my-app");
 
-        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(credentialsId: 'test-id', url: 'http://example.com')], contextPath: 'my-app', onFailure: false, war: 'app.war'");
+        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(context: '', credentialsId: 'test-id', url: 'http://example.com')], contextPath: 'my-app', onFailure: false, war: 'app.war'");
     }
 
     @Test
@@ -151,9 +151,9 @@ public class PipelineSyntaxTest {
         j.getInstance().createProject(WorkflowJob.class, "SnippetTest");
         SnippetizerTester t = new SnippetizerTester(j);
 
-        ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id", "/foo-manager/text");
+        ContainerAdapter tc = new Tomcat8xAdapter("http://example.com", "test-id", StringUtils.EMPTY, "/foo-manager/text");
         DeployPublisher dp = new DeployPublisher(Collections.singletonList(tc), "app.war");
 
-        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(credentialsId: 'test-id', path: '/foo-manager/text', url: 'http://example.com')], war: 'app.war'");
+        t.assertRoundTrip(new CoreStep(dp), "deploy adapters: [tomcat8(context: '', credentialsId: 'test-id', path: '/foo-manager/text', url: 'http://example.com')], war: 'app.war'");
     }
 }
