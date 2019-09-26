@@ -5,14 +5,9 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.plugins.deploy.DeploymentContext;
 import hudson.plugins.deploy.PasswordProtectedAdapterCargo;
 import hudson.util.VariableResolver;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.cargo.container.configuration.Configuration;
 import org.codehaus.cargo.container.deployable.WAR;
@@ -20,6 +15,11 @@ import org.codehaus.cargo.container.property.GeneralPropertySet;
 import org.codehaus.cargo.container.property.RemotePropertySet;
 import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.codehaus.cargo.container.tomcat.TomcatWAR;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Base class for Tomcat adapters.
@@ -37,20 +37,16 @@ public abstract class TomcatAdapter extends PasswordProtectedAdapterCargo {
     /**
      * Alternative context that override context defined in plugin main configuration
      */
-    public final String context;
+    public final DeploymentContext alternativeDeploymentContext;
 
     private final String path;
 
-
-    public TomcatAdapter(String url, String credentialsId, String context) {
-        this(url, credentialsId, context, null);
-    }
-
-    public TomcatAdapter(String url, String credentialsId, String context, String path) {
+    public TomcatAdapter(
+        String url, String credentialsId, DeploymentContext alternativeDeploymentContext, String path) {
         super(credentialsId);
         this.url = url;
         this.path = path;
-        this.context = context;
+        this.alternativeDeploymentContext = alternativeDeploymentContext;
     }
 
     @Override
@@ -97,7 +93,10 @@ public abstract class TomcatAdapter extends PasswordProtectedAdapterCargo {
     public void redeployFile(
         FilePath war, String aContextPath, Run<?, ?> run, Launcher launcher, TaskListener listener)
         throws IOException, InterruptedException {
-        String finalContextPath = StringUtils.defaultIfBlank(this.context, aContextPath);
+        String finalContextPath = aContextPath;
+        if(this.alternativeDeploymentContext != null) {
+            finalContextPath = this.alternativeDeploymentContext.toString();
+        }
         super.redeployFile(war, finalContextPath, run, launcher, listener);
     }
 }

@@ -9,20 +9,14 @@ import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleBuild;
-import hudson.model.StreamBuildListener;
-import hudson.plugins.deploy.ContainerAdapter;
-import hudson.plugins.deploy.DeployPublisher;
 import hudson.model.FreeStyleProject;
 import hudson.model.Node;
 import hudson.model.Result;
 import hudson.model.Run;
+import hudson.model.StreamBuildListener;
+import hudson.plugins.deploy.ContainerAdapter;
+import hudson.plugins.deploy.DeployPublisher;
 import hudson.slaves.EnvironmentVariablesNodeProperty;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.util.Collections;
-
-import org.apache.commons.lang3.StringUtils;
 import org.codehaus.cargo.container.ContainerType;
 import org.codehaus.cargo.container.configuration.Configuration;
 import org.codehaus.cargo.container.configuration.ConfigurationType;
@@ -35,10 +29,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.Collections;
+
 /**
  * @author frekele
  */
-public class Tomcat8xAdapterTest {
+public class Tomcat8xAdapterTest extends TomcatAdapterTest {
 
     private Tomcat8xAdapter adapter;
     private static final String url = "http://localhost:8080";
@@ -59,7 +57,7 @@ public class Tomcat8xAdapterTest {
         UsernamePasswordCredentialsImpl c = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, "test", "sample", username, password);
         CredentialsProvider.lookupStores(jenkinsRule.jenkins).iterator().next().addCredentials(Domain.global(), c);
 
-        adapter = new  Tomcat8xAdapter(url, c.getId(), StringUtils.EMPTY, null);
+        adapter = new  Tomcat8xAdapter(url, c.getId(), null, null);
         adapter.loadCredentials(/* temp project to avoid npe */ jenkinsRule.createFreeStyleProject());
     }
 
@@ -95,7 +93,7 @@ public class Tomcat8xAdapterTest {
 
         adapter =
             new Tomcat8xAdapter(
-                getVariable(urlVariable), c.getId(), getVariable(alternativeContextVariable), managerContextPath);
+                getVariable(urlVariable), c.getId(), getDeploymentContextVariable(alternativeContextVariable), managerContextPath);
         Configuration config = new DefaultConfigurationFactory().createConfiguration(adapter.getContainerId(), ContainerType.REMOTE, ConfigurationType.RUNTIME);
         adapter.migrateCredentials(Collections.<StandardUsernamePasswordCredentials>emptyList());
         adapter.loadCredentials(project);
@@ -118,9 +116,5 @@ public class Tomcat8xAdapterTest {
 
         Run<?, ?> run = project.scheduleBuild2(0).get();
         this.jenkinsRule.assertBuildStatus(Result.SUCCESS, run);
-    }
-
-    private String getVariable(String variableName) {
-    	return variableStart + variableName + variableEnd;
     }
 }
